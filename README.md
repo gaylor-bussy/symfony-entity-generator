@@ -19,8 +19,8 @@ Les versions effectivement installées sont verrouillées dans `composer.lock`. 
 ## Installation
 
 ```bash
-git clone <URL-du-depot>
-cd <repertoire-du-depot>
+git clone https://github.com/gaylor-bussy/symfony-entity-generator.git
+cd symfony-entity-generator
 composer install
 cp .env.example .env
 ```

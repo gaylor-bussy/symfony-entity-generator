@@ -34,7 +34,7 @@ Les cinq opérations sont instanciées et leurs métadonnées vérifiées avec l
 
 Fichiers : `README.md`, `composer.json`, `composer.lock`, `.env.example`, `.gitignore`, `.gitattributes`, `.editorconfig`, `LICENSE`, exemple généré et cette note.
 
-Le runtime ne dépend que de Dotenv ; ORM, DBAL, Cache, Serializer et API Platform sont des dépendances de développement pour valider la sortie. `composer install --no-dev` permet un usage minimal. Le dépôt n'a pas été publié automatiquement. Les limitations techniques sont documentées dans le README ; les versions testées localement ne constituent pas une validation de toutes les versions permises par Composer.
+Le runtime ne dépend que de Dotenv ; ORM, DBAL, Cache, Serializer et API Platform sont des dépendances de développement pour valider la sortie. `composer install --no-dev` permet un usage minimal. Le dépôt est publié à la demande de son propriétaire sur [gaylor-bussy/symfony-entity-generator](https://github.com/gaylor-bussy/symfony-entity-generator). Les limitations techniques sont documentées dans le README ; les versions testées localement ne constituent pas une validation de toutes les versions permises par Composer.
 
 ### Validation locale du 28 octobre 2026
 
