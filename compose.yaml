@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: entity_generator_demo
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - ./examples/demo.sql:/docker-entrypoint-initdb.d/01-demo.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo -d entity_generator_demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 20

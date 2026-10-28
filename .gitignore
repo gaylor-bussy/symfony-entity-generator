@@ -1,0 +1,9 @@
+/vendor/
+/.env
+/.env.local
+/.local/
+/var/
+/generated/
+/generateur_entities
+/.idea/
+/.vscode/

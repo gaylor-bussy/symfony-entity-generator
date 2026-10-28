@@ -1,0 +1,27 @@
+{
+    "name": "personal/postgresql-entity-generator",
+    "description": "Reverse engineering PostgreSQL vers des entités Doctrine à attributs PHP.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-pdo_pgsql": "*",
+        "ext-iconv": "*",
+        "ext-tokenizer": "*",
+        "symfony/dotenv": "^7.4"
+    },
+    "require-dev": {
+        "doctrine/orm": "^3.5",
+        "doctrine/dbal": "^3.10",
+        "symfony/cache": "^7.4",
+        "symfony/serializer": "^7.4",
+        "api-platform/core": "^4.2"
+    },
+    "autoload": {"psr-4": {"EntityGenerator\\": "src/"}},
+    "scripts": {
+        "test": "@php tests/run.php",
+        "test:postgres": "@php tests/postgres.php"
+    },
+    "config": {"sort-packages": true, "platform": {"php": "8.2.12"}}
+}

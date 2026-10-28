@@ -1,0 +1,98 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use EntityGenerator\Config;
+use EntityGenerator\Generator;
+use EntityGenerator\PostgresInspector;
+use EntityGenerator\SafeWriter;
+
+require dirname(__DIR__).'/bootstrap.php';
+
+try {
+    $allowed = ['--help', '-h', '--dry-run', '--force', '--api-platform'];
+    foreach (array_slice($argv, 1) as $arg) {
+        if (!in_array($arg, $allowed, true) && !str_starts_with($arg, '--env=')) {
+            throw new RuntimeException('Option inconnue. Consulter --help.');
+        }
+    }
+    if (in_array('--help', $argv, true) || in_array('-h', $argv, true)) {
+        echo <<<'HELP'
+PostgreSQL Entity Generator 1.0.0
+
+php bin/entity-generator [--dry-run] [--force] [--api-platform] [--env=chemin]
+
+--dry-run       Prévisualise les fichiers et conflits, sans aucune écriture.
+--force         Remplace les fichiers modifiés avec sauvegardes conservées.
+--api-platform  Ajoute ApiResource et les groupes explicitement configurés.
+--env=chemin    Charge ce fichier .env (défaut : .env du répertoire courant).
+
+Configuration : .env.example et README.md. Aucune suppression d'entité obsolète.
+HELP;
+        echo PHP_EOL;
+        exit(0);
+    }
+    $env = getcwd().'/.env';
+    foreach ($argv as $arg) {
+        if (str_starts_with($arg, '--env=')) {
+            $env = substr($arg, 6);
+            if (!is_file($env)) {
+                throw new RuntimeException('Fichier --env introuvable.');
+            }
+        }
+    }
+    if (is_file($env)) {
+        if (!class_exists(Symfony\Component\Dotenv\Dotenv::class)) {
+            throw new RuntimeException('Exécuter composer install pour charger les fichiers .env.');
+        }
+        (new Symfony\Component\Dotenv\Dotenv())->load($env);
+    }
+    $config = Config::environment(in_array('--api-platform', $argv, true));
+    if (!extension_loaded('pdo_pgsql')) {
+        throw new RuntimeException('Extension pdo_pgsql absente. Voir README pour son activation.');
+    }
+    $url = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? '');
+    if ($url === '') {
+        throw new RuntimeException('DATABASE_URL manquante. Copier .env.example vers .env et renseigner une base autorisée.');
+    }
+    $schema = (new PostgresInspector(PostgresInspector::connect($url)))->inspect($config->schema);
+    $generator = new Generator();
+    $files = $generator->generate($schema, $config);
+    foreach ($generator->warnings as $warning) {
+        fwrite(STDERR, 'AVERTISSEMENT : '.$warning.PHP_EOL);
+    }
+    foreach (array_intersect(array_keys($schema->tables), $config->exclude) as $table) {
+        echo 'ignoré (exclusion) : '.$table.PHP_EOL;
+    }
+    $sources = glob(dirname(__DIR__).'/src/*.php');
+    $sources[] = __FILE__;
+    $sources[] = dirname(__DIR__).'/bootstrap.php';
+    sort($sources);
+    $sourceHash = hash_init('sha256');
+    foreach ($sources as $source) {
+        hash_update($sourceHash, basename($source).file_get_contents($source));
+    }
+    $context = [
+        'generatorVersion' => Generator::VERSION,
+        'generatorHash' => hash_final($sourceHash),
+        'schemaHash' => hash('sha256', serialize($schema)),
+        'configurationHash' => hash('sha256', serialize($config)),
+    ];
+    $dry = in_array('--dry-run', $argv, true);
+    $report = (new SafeWriter())->write($config->output, $files, $context, $dry, in_array('--force', $argv, true));
+    if ($dry) {
+        echo "APERÇU — aucune écriture\n";
+    }
+    foreach ($report as $file => $status) {
+        echo $status.' : '.$file.PHP_EOL;
+    }
+    if (in_array('ignoré (conflit manuel)', $report, true)) {
+        exit(2);
+    }
+    echo count($files).' fichier(s) ; sortie : '.$config->output.PHP_EOL;
+} catch (Throwable $error) {
+    // Les exceptions PDO d'inspection ne doivent pas dévoiler les paramètres serveur.
+    fwrite(STDERR, 'ERREUR : '.($error instanceof PDOException ? 'Inspection PostgreSQL impossible (droits ou schéma à vérifier).' : $error->getMessage()).PHP_EOL);
+    exit(1);
+}
