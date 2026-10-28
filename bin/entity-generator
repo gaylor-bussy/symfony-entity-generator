@@ -19,7 +19,7 @@ try {
     }
     if (in_array('--help', $argv, true) || in_array('-h', $argv, true)) {
         echo <<<'HELP'
-PostgreSQL Entity Generator 1.0.0
+Symfony Entity Generator 1.0.0
 
 php bin/entity-generator [--dry-run] [--force] [--api-platform] [--env=chemin]
 

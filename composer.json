@@ -1,6 +1,6 @@
 {
-    "name": "personal/postgresql-entity-generator",
-    "description": "Reverse engineering PostgreSQL vers des entités Doctrine à attributs PHP.",
+    "name": "personal/symfony-entity-generator",
+    "description": "Générateur autonome d'entités Doctrine pour Symfony à partir d'une base PostgreSQL.",
     "type": "project",
     "license": "MIT",
     "require": {

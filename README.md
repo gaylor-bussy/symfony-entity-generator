@@ -1,6 +1,6 @@
-# PostgreSQL Entity Generator
+# Symfony Entity Generator
 
-Générateur autonome d'entités Doctrine à partir d'une base PostgreSQL existante. Il produit des classes PHP avec attributs ORM, propriétés typées, accesseurs et relations bidirectionnelles, sans application Symfony installée dans ce dépôt.
+Générateur d'entités Doctrine pour Symfony, à partir d'une base PostgreSQL existante. Cet outil autonome produit des classes PHP avec attributs ORM, propriétés typées, accesseurs et relations bidirectionnelles, sans application Symfony installée dans ce dépôt.
 
 L'objectif est de proposer une alternative indépendante au parcours de rétro-ingénierie de l'ancienne commande `doctrine:mapping:import`. Ce projet est limité à PostgreSQL et n'est pas un outil officiel Symfony ou Doctrine. [`make:entity` ne fait pas l'import d'une base existante](https://symfony.com/doc/7.0/doctrine/reverse_engineering.html).
 
