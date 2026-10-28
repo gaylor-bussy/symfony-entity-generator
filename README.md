@@ -51,7 +51,7 @@ DATABASE_URL="postgresql://utilisateur:mot_de_passe@127.0.0.1:5432/ma_base?sslmo
 DB_SCHEMA=public
 ENTITY_OUTPUT=generated/Entity
 ENTITY_NAMESPACE="App\\Entity"
-EXCLUDE_TABLES=doctrine_migration_versions,spatial_ref_sys
+EXCLUDE_TABLES=doctrine_migration_versions
 ```
 
 | Variable | Rôle |
@@ -147,7 +147,7 @@ Voir les [conversions DBAL 3.10](https://www.doctrine-project.org/projects/doctr
 
 ### Limites explicites
 
-Le lot entier est refusé, avec diagnostic, pour les types inconnus (domaines, enums, tableaux PostgreSQL, géométrie, `interval`, `timetz`, etc.), `numeric` sans précision ou à échelle non représentable, tables sans PK, tables partitionnées, colonnes calculées, identifiants générés composites, FK partagées, FK à nullabilité mixte, FK vers une clé différente de la PK complète, FK composites identifiantes et références à un identifiant lui-même dérivé d'une relation.
+Le lot entier est refusé, avec diagnostic, pour les types inconnus (domaines, enums, tableaux PostgreSQL, `interval`, `timetz`, etc.), `numeric` sans précision ou à échelle non représentable, tables sans PK, tables partitionnées, colonnes calculées, identifiants générés composites, FK partagées, FK à nullabilité mixte, FK vers une clé différente de la PK complète, FK composites identifiantes et références à un identifiant lui-même dérivé d'une relation.
 
 Les relations interschémas ne sont pas prises en charge. Une FK vers une table exclue bloque la génération : inclure la cible ou exclure aussi la source. Les noms de table contenant un point ou les identifiants contenant un backtick sont refusés pour éviter les ambiguïtés des métadonnées Doctrine. Les vues et partitions enfants ne sont pas importées.
 
